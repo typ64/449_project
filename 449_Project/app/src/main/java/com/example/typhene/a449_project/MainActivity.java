@@ -3,6 +3,7 @@ package com.example.typhene.a449_project;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -20,10 +21,13 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements OnClickListener, OnItemClickListener {
 
     private ArrayAdapter<String> adapter;
-    private int total_number = 0;
+    private ArrayAdapter<Integer> adapter2;
+    public int total_number;
     public final static String EXTRA_DATA = "com.example.typhene.a449_project.ABOUTDATA";
     // Any List Interface Data Structure
-    private ArrayList<String> listItems = new ArrayList<String>();;
+    private ArrayList<Either<String, Integer>> listItems = new ArrayList<Either<String, Integer>>();;
+    //private ArrayList<String> listItems = new ArrayList<String>();;
+    //private ArrayList<Integer> listItems2 = new ArrayList<Integer>();;
 
 
     @Override
@@ -34,39 +38,64 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         View prevButton = findViewById(R.id.button1);
         prevButton.setOnClickListener(this);
 
-        ListView listView = (ListView)this.findViewById(R.id.listOfSomething);
-        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1 , listItems);
+        ListView listView = (ListView) this.findViewById(R.id.listOfSomething);
+        adapter = new ArrayList<Either<String, Integer>>(this, android.R.layout.simple_list_item_1, listItems);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(this);
+
+        }
+    public interface Either<A, B>;
+        public class Left<A, B> implements Either<A, B> {
+            public final A value;
+            public Left(A value) {
+                this.value = value;
+            }
+
+        }
+    public class Right<A, B> implements Either<A, B> {
+            public final B value;
+            public Right(B value) {
+                this.value = value;
+            }
+        /*ListView listView2 = (ListView) this.findViewById(R.id.listOfSomething);
+        adapter2 = new ArrayAdapter<Integer>(this, android.R.layout.simple_list_item_1, listItems2);
+        listView2.setAdapter(adapter2);
+        listView2.setOnItemClickListener(this);*/
     }
     private void updateTotal() {
         TextView t = (TextView)findViewById(R.id.total_num);
         t.setText(Integer.toString(total_number));
     }
     // This is for button clicks
-    @Override
     public void onClick(View arg0) {
         Assert.assertNotNull(arg0);
         // Get string entered
         TextView tv = (TextView) findViewById(R.id.editText1);
         TextView subTV = (TextView) findViewById(R.id.editText2);
-        String text = subTV.getText().toString();
-        int n = 0;
-        if(text.matches("\\d+")) //check if only digits. Could also be text.matches("[0-9]+")
+        Integer text = subTV.getInputType();
+        // Add string to underlying data structure
+        listItems.add(tv.getText().toString());
+        //listItems.add(subTV.getText().toString());
+        // Notify adapter that underlying data structure changed
+        adapter.notifyDataSetChanged();
+        //adapter2.notifyDataSetChanged();
+
+        /*String input = subTV.getText().toString().trim();
+        int total_number = Integer.parseInt(input);
+        switch (arg0.getId()) {
+
+            case R.id.button1:
+                for (int n = 1; n < listItems.size(); n++){
+                    total_number += n;
+                }
+                updateTotal();
+        /*if(text.matches("\\d+")) //check if only digits. Could also be text.matches("[0-9]+")
         {
             n = Integer.parseInt(text);
         }
-        else
-        {
-            System.out.println("not a valid number");
-        }
-        int total_number = n+n;
-        updateTotal();
-        // Add string to underlying data structure
-        listItems.add(tv.getText().toString());
-        listItems.add(subTV.getText().toString());
-        // Notify adapter that underlying data structure changed
-        adapter.notifyDataSetChanged();
+                total_number++;
+                break;
+        }*/
     }
 
     // This is for selecting an item from the list
@@ -85,6 +114,12 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         }
     }
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -93,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         switch (item.getItemId()) {
             case R.id.about:
                 Intent intent = new Intent(this, AboutMenu.class);
-                intent.putExtra(EXTRA_DATA, "Welcome to Umpire Buddy");
+                intent.putExtra(EXTRA_DATA, "Welcome to Budget Watch");
                 startActivity(intent);
                 return true;
             default:
