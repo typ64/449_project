@@ -13,23 +13,34 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import junit.framework.Assert;
-
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements OnClickListener, OnItemClickListener {
 
-    private ArrayAdapter<String> adapter;
-    private ArrayAdapter<Integer> adapter2;
-    public int total_number;
-    public final static String EXTRA_DATA = "com.example.typhene.a449_project.ABOUTDATA";
     // Any List Interface Data Structure
-    private ArrayList<Either<String, Integer>> listItems = new ArrayList<Either<String, Integer>>();;
-    //private ArrayList<String> listItems = new ArrayList<String>();;
-    //private ArrayList<Integer> listItems2 = new ArrayList<Integer>();;
+    private ArrayList<Item> listItems = new ArrayList<>();;
+    private ArrayAdapter<Item> adapter;
+    public final static String EXTRA_DATA = "com.example.typhene.a449_project.ABOUTDATA";
+    public int Total = 0;
+
+    class Item
+    {
+        public int price;
+        public String item;
 
 
+        @Override
+        public String toString(){
+            return item + " " + "$" + price;
+        }
+
+    }
+
+    private void updateTotal() {
+        TextView t = (TextView)findViewById(R.id.total_num);
+        t.setText(Integer.toString(Total));
+    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,80 +49,58 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         View prevButton = findViewById(R.id.button1);
         prevButton.setOnClickListener(this);
 
-        ListView listView = (ListView) this.findViewById(R.id.listOfSomething);
-        adapter = new ArrayList<Either<String, Integer>>(this, android.R.layout.simple_list_item_1, listItems);
+        ListView listView = (ListView)this.findViewById(R.id.listOfSomething);
+        adapter = new ArrayAdapter<Item>(this, android.R.layout.simple_list_item_1 , listItems);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(this);
-
-        }
-    public interface Either<A, B>;
-        public class Left<A, B> implements Either<A, B> {
-            public final A value;
-            public Left(A value) {
-                this.value = value;
-            }
-
-        }
-    public class Right<A, B> implements Either<A, B> {
-            public final B value;
-            public Right(B value) {
-                this.value = value;
-            }
-        /*ListView listView2 = (ListView) this.findViewById(R.id.listOfSomething);
-        adapter2 = new ArrayAdapter<Integer>(this, android.R.layout.simple_list_item_1, listItems2);
-        listView2.setAdapter(adapter2);
-        listView2.setOnItemClickListener(this);*/
     }
-    private void updateTotal() {
-        TextView t = (TextView)findViewById(R.id.total_num);
-        t.setText(Integer.toString(total_number));
-    }
+
     // This is for button clicks
+    @Override
     public void onClick(View arg0) {
         Assert.assertNotNull(arg0);
         // Get string entered
+        Item i = new Item();
         TextView tv = (TextView) findViewById(R.id.editText1);
         TextView subTV = (TextView) findViewById(R.id.editText2);
-        Integer text = subTV.getInputType();
         // Add string to underlying data structure
-        listItems.add(tv.getText().toString());
-        //listItems.add(subTV.getText().toString());
+        i.item =(tv.getText().toString());
+        i.price = Integer.parseInt (subTV.getText().toString());
+       listItems.add(i);
+       // listItems.add(subTV.getText().toString());
         // Notify adapter that underlying data structure changed
         adapter.notifyDataSetChanged();
-        //adapter2.notifyDataSetChanged();
-
-        /*String input = subTV.getText().toString().trim();
-        int total_number = Integer.parseInt(input);
-        switch (arg0.getId()) {
-
-            case R.id.button1:
-                for (int n = 1; n < listItems.size(); n++){
-                    total_number += n;
-                }
-                updateTotal();
-        /*if(text.matches("\\d+")) //check if only digits. Could also be text.matches("[0-9]+")
-        {
-            n = Integer.parseInt(text);
+        for (int r = 0; r < listItems.size(); r++) {
+           int total_number =0;
+            total_number = i.price;
+            Total =+ total_number;
         }
-                total_number++;
-                break;
-        }*/
+        updateTotal();
     }
 
     // This is for selecting an item from the list
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         // Get item from ListView
-        String item = (String) parent.getItemAtPosition(position);
-        String price = (String) parent.getItemAtPosition(position+1);
-        //String price = (String) parent.getItemAtPosition(position);
-        if (position % 2 == 0) {
-            String text = "Item number " + (position + 1)
-                    + " (" + item + ")" + " cost $" + price + ".";
-            // Use a toast message to show which item selected
-            Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
-            toast.show();
-        }
+        Item i = new Item();
+        TextView tv = (TextView) findViewById(R.id.editText1);
+        TextView subTV = (TextView) findViewById(R.id.editText2);
+        // Add string to underlying data structure
+        i.item =(tv.getText().toString());
+        i.price = Integer.parseInt (subTV.getText().toString());
+        /*String clickSpot = (String) parent.getItemAtPosition(position);
+        String iR = clickSpot;
+        String pR = clickSpot;
+        String itemHere = iR.replaceAll("\\d", "");
+        String priceHere = pR.replaceAll("[^\\d.]", "");
+        */
+        Item itemHere = (Item) parent.getItemAtPosition(position);
+        Item priceHere = (Item) parent.getItemAtPosition(position);
+        String text = "Item number " + (position + 1)
+                + " (" + itemHere + ")" + " cost $" + priceHere + ".";
+        // Use a toast message to show which item selected
+        Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
+        toast.show();
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
