@@ -70,13 +70,18 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
        // listItems.add(subTV.getText().toString());
         // Notify adapter that underlying data structure changed
         adapter.notifyDataSetChanged();
-        for (int r = 0; r < listItems.size(); r++) {
-           int total_number =0;
-            total_number = i.price;
-            Total =+ total_number;
+        /*int[] Total = new int[listItems.size()];
+        for (int r=0; r < Total.length; r++){
+            int price = Integer.parseInt(String.valueOf(listItems.get(r)));
+            Total[r]=price;
+        }*/
+            for (int r = 0; r < listItems.size(); r++) {
+                int total_number = 0;
+                total_number = i.price;
+                Total = total_number/listItems.size();
+                updateTotal();
+            }
         }
-        updateTotal();
-    }
 
     // This is for selecting an item from the list
     @Override
