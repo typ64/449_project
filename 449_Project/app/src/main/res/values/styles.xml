@@ -6,6 +6,10 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+       <!-- <item name="colorAboutBG">@color/aboutBG</item>
+        <item name="colorMainBG">@color/aboutBG</item>
+        <item name="colorBudgetBG">@color/aboutBG</item>
+        <item name="colorFont">@color/colorFont</item>-->
     </style>
 
 </resources>

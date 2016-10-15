@@ -3,4 +3,8 @@
     <color name="colorPrimary">#dfcdcd</color>
     <color name="colorPrimaryDark">#0edaf1</color>
     <color name="colorAccent">#FF4081</color>
+    <!--<color name="colorAboutBG">#c2d7d3d3</color>
+    <color name="colorMainBG">#504e4e</color>
+    <color name="colorBudgetBG">#ffffff</color>
+    <color name="colorFont">#00ff00</color>-->
 </resources>

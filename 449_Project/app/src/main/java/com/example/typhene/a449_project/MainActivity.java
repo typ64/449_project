@@ -13,7 +13,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import junit.framework.Assert;
+
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements OnClickListener, OnItemClickListener {
@@ -22,13 +24,14 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
     private ArrayList<Item> listItems = new ArrayList<>();;
     private ArrayAdapter<Item> adapter;
     public final static String EXTRA_DATA = "com.example.typhene.a449_project.ABOUTDATA";
-    public int Total = 0;
+    public int total = 0;
+    public int t_budget = 0;
+    public int s_budget = 0;
 
     class Item
     {
         public int price;
         public String item;
-
 
         @Override
         public String toString(){
@@ -39,7 +42,23 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 
     private void updateTotal() {
         TextView t = (TextView)findViewById(R.id.total_num);
-        t.setText(Integer.toString(Total));
+        t.setText(("$")+Integer.toString(total));
+    }
+    private void updateBudget() {
+        TextView t = (TextView)findViewById(R.id.bud_num);
+        t.setText(("$")+Integer.toString(t_budget));
+    }
+    private void clearItem() {
+        TextView t = (TextView)findViewById(R.id.editText1);
+        t.setText("");
+    }
+    private void clearPrice() {
+        TextView t = (TextView)findViewById(R.id.editText2);
+        t.setText("");
+    }
+    private void startAt1() {
+        TextView t = (TextView)findViewById(R.id.editText1);
+        t.requestFocus();
     }
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -66,22 +85,23 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         // Add string to underlying data structure
         i.item =(tv.getText().toString());
         i.price = Integer.parseInt (subTV.getText().toString());
-       listItems.add(i);
-       // listItems.add(subTV.getText().toString());
+        listItems.add(i);
         // Notify adapter that underlying data structure changed
         adapter.notifyDataSetChanged();
-        /*int[] Total = new int[listItems.size()];
-        for (int r=0; r < Total.length; r++){
-            int price = Integer.parseInt(String.valueOf(listItems.get(r)));
-            Total[r]=price;
-        }*/
-            for (int r = 0; r < listItems.size(); r++) {
-                int total_number = 0;
-                total_number = i.price;
-                Total = total_number/listItems.size();
-                updateTotal();
-            }
+        for (int r = 0; r < listItems.size()/listItems.size(); r++) {
+            total += i.price;
+            updateTotal();
         }
+
+        if (s_budget > 1) {
+            int t_budget = s_budget - total;
+        }
+
+        clearPrice();
+        clearItem();
+        startAt1();
+        updateBudget();
+    }
 
     // This is for selecting an item from the list
     @Override
@@ -93,20 +113,14 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         // Add string to underlying data structure
         i.item =(tv.getText().toString());
         i.price = Integer.parseInt (subTV.getText().toString());
-        /*String clickSpot = (String) parent.getItemAtPosition(position);
-        String iR = clickSpot;
-        String pR = clickSpot;
-        String itemHere = iR.replaceAll("\\d", "");
-        String priceHere = pR.replaceAll("[^\\d.]", "");
-        */
-        Item itemHere = (Item) parent.getItemAtPosition(position);
-        Item priceHere = (Item) parent.getItemAtPosition(position);
-        String text = "Item number " + (position + 1)
-                + " (" + itemHere + ")" + " cost $" + priceHere + ".";
+        String text = "Your " + i.item + " is item number " + (position+1) +
+                " and cost $" + i.price + ".";
         // Use a toast message to show which item selected
-        Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
+        Toast toast = Toast.makeText(this, text, Toast.LENGTH_LONG);
         toast.show();
+
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -120,6 +134,14 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         // as you specify a parent activity in AndroidManifest.xml.
 
         switch (item.getItemId()) {
+            case R.id.budget:
+                Intent intent2 = new Intent(this, BudgetActivity.class);
+                startActivity(intent2);
+                return true;
+            case R.id.totals:
+                Intent intent3 = new Intent(this, TotalsActivity.class);
+                startActivity(intent3);
+                return true;
             case R.id.about:
                 Intent intent = new Intent(this, AboutMenu.class);
                 intent.putExtra(EXTRA_DATA, "Welcome to Budget Watch");
@@ -129,4 +151,6 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
                 return super.onOptionsItemSelected(item);
         }
     }
+    Intent intent3=new Intent(Info.this, GraphDiag.class).putExtra("Total", total);
+    MainActivity(intent3);
 }
