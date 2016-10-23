@@ -37,9 +37,18 @@
             android:layout_height="45dp"
             android:id="@+id/budget"
             android:layout_weight="1.00" />
-        <TextView android:layout_weight="1" android:id="@+id/bud_num" android:layout_height="wrap_content" android:layout_width="wrap_content"
-            android:text="@string/bud_num">
-        </TextView>
+            <TextView android:layout_weight="1" android:id="@+id/bud_num" android:layout_height="wrap_content" android:layout_width="wrap_content"
+                android:text="@string/bud_num">
+            </TextView>
+            <TextView
+                android:text="@string/rem_budget"
+                android:layout_width="wrap_content"
+                android:layout_height="45dp"
+                android:id="@+id/remBudget"
+                android:layout_weight="1.00" />
+            <TextView android:layout_weight="1" android:id="@+id/rem_bud_num" android:layout_height="wrap_content" android:layout_width="wrap_content"
+                android:text="@string/bud_num">
+            </TextView>
         </LinearLayout>
         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:id="@+id/linearLayout1">
         <EditText

@@ -10,7 +10,10 @@
     <string name="total_num">$0</string>
     <string name="budget">Budget: </string>
     <string name="bud_num">$0</string>
+    <string name="rem_budget">Remaining Budget: </string>
+    <string name="rem_bud_num">$0</string>
     <string name="item_placeholder">Enter item...</string>
     <string name="price_placeholder">Enter price...</string>
-    <string name="budget_placeholder">Enter your budget for your shopping trip...</string>
+    <string name="budget_placeholder">Enter your budget...</string>
+    <string name="dollar_sign">$</string>
 </resources>
