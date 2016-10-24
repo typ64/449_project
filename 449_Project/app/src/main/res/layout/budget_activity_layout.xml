@@ -20,7 +20,13 @@
         android:inputType="number" android:hint="@string/budget_placeholder">
     </EditText>
 
-    <Button android:text="@string/button_name" android:id="@+id/Bbutton1" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+    <!--<Button android:text="@string/button_name" android:id="@+id/Bbutton1" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+    --><Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="sendMessage"
+        android:text="@string/button_name" />
 
 
 </LinearLayout>

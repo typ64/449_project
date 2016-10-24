@@ -1,37 +1,5 @@
 package com.example.typhene.a449_project;
 
-/*public abstract class BudgetActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
-
-   private int s_budget = 0;
-
-    class Item
-    {
-        public int budget;
-
-        @Override
-        public String toString(){
-            return  "Your budget is $" + budget;
-        }
-
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.budget_activity_layout);
-
-
-        View prevButton = findViewById(R.id.Bbutton1);
-        prevButton.setOnClickListener(this);
-    }
-    @Override
-    public void onClick(View v) {
-        EditText bud_text = (EditText)findViewById(R.id.editBText1);
-        String b = bud_text.getText().toString();
-        int s_budget = Integer.parseInt (bud_text.getText().toString());
-    }
-}*/
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -42,20 +10,16 @@ import android.widget.Toast;
 
 import junit.framework.Assert;
 
-public class BudgetActivity extends AppCompatActivity implements View.OnClickListener {
-    private int t_budget= 0;
+public class BudgetActivity extends AppCompatActivity{// implements View.OnClickListener {
+    /*private int t_budget= 0;
 
-    private void updateBudget() {
-        TextView t = (TextView) findViewById(R.id.rem_bud_num);
-        t.setText(("$") + Integer.toString(t_budget));
-    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
        super.onCreate(savedInstanceState);
         setContentView(R.layout.budget_activity_layout);
 
-        View prevButton = findViewById(R.id.Bbutton1);
-        prevButton.setOnClickListener(this);
+        //View prevButton = findViewById(R.id.Bbutton1);
+       // prevButton.setOnClickListener(this);
         // Receive extra data or parameter
         Intent intent2 = getIntent();
         String message = intent2.getStringExtra(MainActivity.EXTRA_DATA2);
@@ -74,9 +38,35 @@ public class BudgetActivity extends AppCompatActivity implements View.OnClickLis
         finish();
     }
 
+    public void sendMessage(View view)
+    {
+        //Assert.assertNotNull(arg0);
+        Intent start_main = new Intent(BudgetActivity.this, MainActivity.class);
+        startActivity(start_main);
+
+    }*/
     @Override
-    public void onClick(View arg0) {
-        Assert.assertNotNull(arg0);
-        updateBudget();
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.budget_activity_layout);
+
+        // Receive extra data or parameter
+        Intent intent2 = getIntent();
+        String message = intent2.getStringExtra(MainActivity.EXTRA_DATA2);
+
+        Context context = getApplicationContext();
+        CharSequence text = message;
+        int duration = Toast.LENGTH_LONG;
+        Toast toastb = Toast.makeText(context, text, duration);
+        toastb.show();
+    }
+    public void sendMessage(View view)
+    {
+        TextView tv = (TextView) findViewById(R.id.editBText1);
+       int t_budget = Integer.parseInt(tv.getText().toString());
+        Intent start_main = new Intent(BudgetActivity.this, MainActivity.class);
+        startActivity(start_main);
+        start_main.putExtra("int", t_budget);
+        MainActivity.updateBudget(this);
     }
 }

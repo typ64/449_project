@@ -1,6 +1,8 @@
 package com.example.typhene.a449_project;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -23,13 +25,12 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 
     // Any List Interface Data Structure
     private ArrayList<Item> listItems = new ArrayList<>();
-    ;
     private ArrayAdapter<Item> adapter;
     public final static String EXTRA_DATA = "com.example.typhene.a449_project.ABOUTDATA";
     public final static String EXTRA_DATA3 = "com.example.typhene.a449_project.TOTALDATA";
     public final static String EXTRA_DATA2 = "com.example.typhene.a449_project.BUDGETDATA";
     public static int total = 0;
-    public int t_budget = 0;
+    public static int t_budget = 0;
     public int s_budget = 0;
 
     class Item {
@@ -48,11 +49,14 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         t.setText(("$") + Integer.toString(total));
     }
 
+    public static void updateBudget(BudgetActivity f) {
+        TextView t = (TextView) f.findViewById(R.id.rem_bud_num);
+        t.setText(("$") + Integer.toString(t_budget));
+    }
     private void updateBudget() {
         TextView t = (TextView) findViewById(R.id.rem_bud_num);
         t.setText(("$") + Integer.toString(t_budget));
     }
-
     private void clearItem() {
         TextView t = (TextView) findViewById(R.id.editText1);
         t.setText("");
@@ -80,6 +84,20 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         adapter = new ArrayAdapter<Item>(this, android.R.layout.simple_list_item_1, listItems);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(this);
+
+        Context context = getApplicationContext();
+        int duration = Toast.LENGTH_LONG;
+        Intent i = getIntent();
+        int t_budget = i.getIntExtra("int", -1);
+        updateBudget();
+        Toast toast2 = Toast.makeText(context, "The Budget is $" + t_budget, duration);
+        toast2.show();
+        /*Intent i = new Intent( this, TotalsActivity.class);
+
+        i.putExtra( "int", total);
+
+        i.putExtra( "string", "hello" );*/
+
     }
 
     // This is for button clicks
@@ -100,9 +118,9 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
             total += i.price;
             updateTotal();
         }
-        if (s_budget > 1) {
+        /*if (s_budget > 1) {
             int t_budget = s_budget - total;
-        }
+        }*/
 
         clearPrice();
         clearItem();
@@ -123,8 +141,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         String text = "Your " + i.item + " is item number " + (position + 1) +
                 " and cost $" + i.price + ".";
         // Use a toast message to show which item selected
-        Toast toast = Toast.makeText(this, text, Toast.LENGTH_LONG);
-        toast.show();
+        Toast toastt = Toast.makeText(this, text, Toast.LENGTH_LONG);
+        toastt.show();
 
     }
 
@@ -145,11 +163,12 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
             case R.id.budget:
                 Intent intent2 = new Intent(this, BudgetActivity.class);
                 intent2.putExtra(EXTRA_DATA2, "Enter your budget");
-                startActivityForResult(intent2, 1);
-                return true;c
+                //startActivityForResult(intent2, 1);
+                startActivity(intent2);
+                return true;
             case R.id.totals:
                 Intent intent3 = new Intent(this, TotalsActivity.class);
-                intent3.putExtra(EXTRA_DATA3,"This is your total ");
+                intent3.putExtra("int", total);
                 startActivity(intent3);
                 return true;
             case R.id.about:
@@ -162,18 +181,18 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         }
     }
 
-    @Override
+    /*@Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         setContentView(R.layout.budget_activity_layout);
 
-        View prevButton = findViewById(R.id.Bbutton1);
-        prevButton.setOnClickListener(this);
+       // View prevButton = findViewById(R.id.Bbutton1);
+       //prevButton.setOnClickListener(this);
         // Receive extra data or parameter
-        Intent intent2 = getIntent();
-        String message = intent2.getStringExtra(MainActivity.EXTRA_DATA2);
+      // Intent intent2 = getIntent();
+       // String message = intent2.getStringExtra(MainActivity.EXTRA_DATA2);
 
-        if (requestCode == 1) {
+       if (requestCode == 1) {
             if (resultCode == Activity.RESULT_OK) {
                 int result = data.getIntExtra("t_budget", -1);
                 Toast toastb = Toast.makeText(this, "return value " + result, Toast.LENGTH_LONG);
@@ -183,5 +202,5 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
                 //Write your code if there's no result
             }
         }
-    }
+    }*/
 }
