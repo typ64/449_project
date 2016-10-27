@@ -52,7 +52,7 @@ public class BudgetActivity extends AppCompatActivity{// implements View.OnClick
 
         // Receive extra data or parameter
         Intent intent2 = getIntent();
-        String message = intent2.getStringExtra(MainActivity.EXTRA_DATA2);
+        String message = "Enter your budget";
 
         Context context = getApplicationContext();
         CharSequence text = message;
@@ -65,8 +65,8 @@ public class BudgetActivity extends AppCompatActivity{// implements View.OnClick
         TextView tv = (TextView) findViewById(R.id.editBText1);
        int t_budget = Integer.parseInt(tv.getText().toString());
         Intent start_main = new Intent(BudgetActivity.this, MainActivity.class);
+        start_main.putExtra("int_value", t_budget);
         startActivity(start_main);
-        start_main.putExtra("int", t_budget);
-        MainActivity.updateBudget(this);
+
     }
 }

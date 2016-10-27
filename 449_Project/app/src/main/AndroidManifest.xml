@@ -13,7 +13,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".BudgetActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -22,7 +22,7 @@
         </activity>
         <activity android:name=".AboutMenu"></activity>
         <activity android:name=".TotalsActivity"></activity>
-        <activity android:name=".BudgetActivity"></activity>
+        <activity android:name=".MainActivity"></activity>
     </application>
 
 </manifest>
