@@ -1,7 +1,5 @@
 package com.example.typhene.a449_project;
 
-import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,7 +9,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -21,7 +18,7 @@ import junit.framework.Assert;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements OnClickListener, OnItemClickListener {
+public class MainActivity extends AppCompatActivity implements OnClickListener, AdapterView.OnItemClickListener {
 
     // Any List Interface Data Structure
     private ArrayList<Item> listItems = new ArrayList<>();
@@ -82,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         ListView listView = (ListView) this.findViewById(R.id.listOfSomething);
         adapter = new ArrayAdapter<Item>(this, android.R.layout.simple_list_item_1, listItems);
         listView.setAdapter(adapter);
-        listView.setOnItemClickListener(this);
+        //listView.setOnItemClickListener(this);
 
         Context context = getApplicationContext();
         int duration = Toast.LENGTH_LONG;
@@ -101,51 +98,63 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
     // This is for button clicks
     @Override
     public void onClick(View arg0) {
-        Assert.assertNotNull(arg0);
-        // Get string entered
-        Item i = new Item();
-        TextView tv = (TextView) findViewById(R.id.editText1);
-        TextView subTV = (TextView) findViewById(R.id.editText2);
-        // Add string to underlying data structure
-        i.item = (tv.getText().toString());
-        i.price = Integer.parseInt(subTV.getText().toString());
-        listItems.add(i);
-        // Notify adapter that underlying data structure changed
-        adapter.notifyDataSetChanged();
-        for (int r = 0; r < listItems.size() / listItems.size(); r++) {
-            total += i.price;
-            updateTotal();
+        try {
+            Assert.assertNotNull(arg0);
+            // Get string entered
+            Item i = new Item();
+            TextView tv = (TextView) findViewById(R.id.editText1);
+            TextView subTV = (TextView) findViewById(R.id.editText2);
+            // Add string to underlying data structure
+            i.item = (tv.getText().toString());
+            i.price = Integer.parseInt(subTV.getText().toString());
+            listItems.add(i);
+            // Notify adapter that underlying data structure changed
+            adapter.notifyDataSetChanged();
+            for (int r = 0; r < listItems.size() / listItems.size(); r++) {
+                total += i.price;
+                updateTotal();
+            }
+            if (t_budget > 0) {
+                r_bud = t_budget - total;
+                if (r_bud < 5) {
+                    if (r_bud < 0) {
+                        Context lcontext = getApplicationContext();
+                        int lduration = Toast.LENGTH_LONG;
+                        Toast ltoast = Toast.makeText(lcontext, "YOU ARE OVER BUDGET!!! CONSIDER REVISING SHOPPING CART.", lduration);
+                        ltoast.show();
+                    } else {
+                        Context context = getApplicationContext();
+                        int bduration = Toast.LENGTH_LONG;
+                        Toast btoast = Toast.makeText(context, "BE CAREFUL. YOU ONLY HAVE $" + r_bud + " REMAINING", bduration);
+                        btoast.show();
+                    }
+                }
+                clearPrice();
+                clearItem();
+                startAt1();
+                updateTBudget();
+                updateRemBud();
+            }
         }
-        if (t_budget > 1){
-            r_bud = t_budget - total;
+        catch(Exception e) {
+            Context context = getApplicationContext();
+            int duration = Toast.LENGTH_LONG;
+            Toast toast = Toast.makeText(context, "You must enter a item and price.", duration);
+            toast.show();
         }
-        clearPrice();
-        clearItem();
-        startAt1();
-        updateTBudget();
-        updateRemBud();
     }
 
     // This is for selecting an item from the list
-    @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        /*Item i = new Item();
-        TextView tv = (TextView) findViewById(R.id.editText1);
-        TextView subTV = (TextView) findViewById(R.id.editText2);
-        // Add string to underlying data structure
-        i.item = (tv.getText().toString());
-        i.price = Integer.parseInt(subTV.getText().toString());*/
-        TextView tv = (TextView) findViewById(R.id.editText1);
-        TextView subTV = (TextView) findViewById(R.id.editText2);
-        // Add string to underlying data structure
-        String item = (tv.getText().toString());
-        String price = (subTV.getText().toString());
-        // Get item from ListView
-        String text = " Item number "  + (position + 1) + item +
-                " and cost $" + price + ".";
+        Item item = (Item)  parent.getItemAtPosition(position);
+       // Add string to underlying data structure
+        /*String text = i.item + "is item number " + (position + 1) +
+                " and cost $"; //+ price + ".";*/
+        String text = "Item #" + (position + 1) + " = " + item + ".";
+       // Get item from ListView
         // Use a toast message to show which item selected
-        Toast toastt = Toast.makeText(this, text, Toast.LENGTH_LONG);
-        toastt.show();
+       Toast toastt = Toast.makeText(this, text, Toast.LENGTH_LONG);
+       toastt.show();
     }
 
     @Override
@@ -179,7 +188,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
                 startActivity(intent);
                 return true;
             default:
-                return super.onOptionsItemSelected(item);
+                Assert.fail("Event has no event handler.");
+                return true;
         }
     }
 
