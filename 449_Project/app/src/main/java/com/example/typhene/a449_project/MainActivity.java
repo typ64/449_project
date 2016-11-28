@@ -53,19 +53,26 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         TextView t = (TextView) findViewById(R.id.bud_num);
         t.setText(("$") + Integer.toString(t_budget));
     }
+    //clears the item text after adding item to list
     private void clearItem() {
         TextView t = (TextView) findViewById(R.id.editText1);
         t.setText("");
     }
-
+//clears the price text after adding item to list
     private void clearPrice() {
         TextView t = (TextView) findViewById(R.id.editText2);
         t.setText("");
     }
-
+//moves the cursor back to the item after adding item to list
     private void startAt1() {
         TextView t = (TextView) findViewById(R.id.editText1);
         t.requestFocus();
+    }
+    private void clearList() {
+        listItems.clear();
+        ListView listView = (ListView) this.findViewById(R.id.listOfSomething);
+        adapter = new ArrayAdapter<Item>(this, android.R.layout.simple_list_item_1, listItems);
+        listView.setAdapter(adapter);
     }
 
     @Override
@@ -129,12 +136,12 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
                         btoast.show();
                     }
                 }
-                clearPrice();
-                clearItem();
-                startAt1();
-                updateTBudget();
-                updateRemBud();
             }
+            clearPrice();
+            clearItem();
+            startAt1();
+            updateTBudget();
+            updateRemBud();
         }
         catch(Exception e) {
             Context context = getApplicationContext();
@@ -171,12 +178,14 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         // as you specify a parent activity in AndroidManifest.xml.
 
         switch (item.getItemId()) {
-            /*case R.id.budget:
-                Intent intent2 = new Intent(this, BudgetActivity.class);
-                intent2.putExtra(EXTRA_DATA2, "Enter your budget");
-                //startActivityForResult(intent2, 1);
-                startActivity(intent2);
-                return true;*/
+            case R.id.reset:
+                total = 0;
+                t_budget = 0;
+                updateTotal();
+                updateTBudget();
+                updateRemBud();
+                clearList();
+                return true;
             case R.id.totals:
                 Intent intent3 = new Intent(this, TotalsActivity.class);
                 intent3.putExtra("int", total);
