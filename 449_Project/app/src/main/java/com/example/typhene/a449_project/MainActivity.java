@@ -3,6 +3,7 @@ package com.example.typhene.a449_project;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,38 +21,47 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements OnClickListener, AdapterView.OnItemClickListener {
 
+
     // Any List Interface Data Structure
     private ArrayList<Item> listItems = new ArrayList<>();
     private ArrayAdapter<Item> adapter;
     public final static String EXTRA_DATA = "com.example.typhene.a449_project.ABOUTDATA";
     public final static String EXTRA_DATA3 = "com.example.typhene.a449_project.TOTALDATA";
-    //public final static String EXTRA_DATA2 = "com.example.typhene.a449_project.BUDGETDATA";
-    public static int total = 0;
+    private static int total = 0;
     public int t_budget;
     public int r_bud;
+    private static final int SELECT_PICTURE = 1;
+    public static final String $ = "$";
+
+    public static int getTotal() {
+        return total;
+    }
+
+    public static void setTotal(int total) {
+        MainActivity.total = total;
+    }
 
     class Item {
         public int price;
         public String item;
 
         @Override
-        public String toString() {
-            return item + " " + "$" + price;
+        public String toString(){
+            return item + " " + $ + price + "        " + "(Click to add picture)" +  "   " + R.drawable.burger;
         }
-
     }
 
     private void updateTotal() {
         TextView t = (TextView) findViewById(R.id.total_num);
-        t.setText(("$") + Integer.toString(total));
+        t.setText($ + Integer.toString(getTotal()));
     }
     private void updateRemBud() {
         TextView t2 = (TextView) findViewById(R.id.rem_bud_num);
-        t2.setText(("$") + Integer.toString(r_bud));
+        t2.setText($ + Integer.toString(r_bud));
     }
     private void updateTBudget() {
         TextView t = (TextView) findViewById(R.id.bud_num);
-        t.setText(("$") + Integer.toString(t_budget));
+        t.setText($ + Integer.toString(t_budget));
     }
     //clears the item text after adding item to list
     private void clearItem() {
@@ -64,15 +74,19 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         t.setText("");
     }
 //moves the cursor back to the item after adding item to list
-    private void startAt1() {
+    private void restartCursor() {
         TextView t = (TextView) findViewById(R.id.editText1);
         t.requestFocus();
     }
     private void clearList() {
         listItems.clear();
         ListView listView = (ListView) this.findViewById(R.id.listOfSomething);
-        adapter = new ArrayAdapter<Item>(this, android.R.layout.simple_list_item_1, listItems);
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listItems);
         listView.setAdapter(adapter);
+    }
+    private void updateBudgets() {
+        updateTBudget();
+        updateRemBud();
     }
 
     @Override
@@ -84,9 +98,9 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         prevButton.setOnClickListener(this);
 
         ListView listView = (ListView) this.findViewById(R.id.listOfSomething);
-        adapter = new ArrayAdapter<Item>(this, android.R.layout.simple_list_item_1, listItems);
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listItems);
         listView.setAdapter(adapter);
-        //listView.setOnItemClickListener(this);
+        listView.setOnItemClickListener(this);
 
         Context context = getApplicationContext();
         int duration = Toast.LENGTH_LONG;
@@ -95,8 +109,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         t_budget = start_main.getIntExtra("int_value", 0);
         r_bud=t_budget;
 
-        updateTBudget();
-        updateRemBud();
+        updateBudgets();
 
         Toast toast2 = Toast.makeText(context, "The Budget is $" + t_budget, duration);
         toast2.show();
@@ -118,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
             // Notify adapter that underlying data structure changed
             adapter.notifyDataSetChanged();
             for (int r = 0; r < listItems.size() / listItems.size(); r++) {
-                total += i.price;
+                setTotal(getTotal() + i.price);
                 updateTotal();
             }
             if (t_budget > 0) {
@@ -139,9 +152,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
             }
             clearPrice();
             clearItem();
-            startAt1();
-            updateTBudget();
-            updateRemBud();
+            restartCursor();
+            updateBudgets();
         }
         catch(Exception e) {
             Context context = getApplicationContext();
@@ -153,15 +165,21 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 
     // This is for selecting an item from the list
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Item item = (Item)  parent.getItemAtPosition(position);
-       // Add string to underlying data structure
-        /*String text = i.item + "is item number " + (position + 1) +
-                " and cost $"; //+ price + ".";*/
-        String text = "Item #" + (position + 1) + " = " + item + ".";
-       // Get item from ListView
-        // Use a toast message to show which item selected
-       Toast toastt = Toast.makeText(this, text, Toast.LENGTH_LONG);
-       toastt.show();
+        Intent pickIntent = new Intent();
+        pickIntent.setType("image/*");
+        pickIntent.setAction(Intent.ACTION_GET_CONTENT);
+
+        Intent takePhotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        String pickTitle = "Select or take a new Picture"; // Or get from strings.xml
+        Intent chooserIntent = Intent.createChooser(pickIntent, pickTitle);
+        chooserIntent.putExtra
+                (
+                        Intent.EXTRA_INITIAL_INTENTS,
+                        new Intent[] { takePhotoIntent }
+                );
+
+        startActivityForResult(chooserIntent, SELECT_PICTURE);
     }
 
     @Override
@@ -179,16 +197,16 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 
         switch (item.getItemId()) {
             case R.id.reset:
-                total = 0;
+                setTotal(0);
                 t_budget = 0;
+                r_bud = 0;
                 updateTotal();
-                updateTBudget();
-                updateRemBud();
+                updateBudgets();
                 clearList();
                 return true;
             case R.id.totals:
                 Intent intent3 = new Intent(this, TotalsActivity.class);
-                intent3.putExtra("int", total);
+                intent3.putExtra("int", getTotal());
                 startActivity(intent3);
                 return true;
             case R.id.about:
@@ -201,27 +219,4 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
                 return true;
         }
     }
-
-    /*@Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        setContentView(R.layout.budget_activity_layout);
-
-       // View prevButton = findViewById(R.id.Bbutton1);
-       //prevButton.setOnClickListener(this);
-        // Receive extra data or parameter
-      // Intent intent2 = getIntent();
-       // String message = intent2.getStringExtra(MainActivity.EXTRA_DATA2);
-
-       if (requestCode == 1) {
-            if (resultCode == Activity.RESULT_OK) {
-                int result = data.getIntExtra("t_budget", -1);
-                Toast toastb = Toast.makeText(this, "return value " + result, Toast.LENGTH_LONG);
-                toastb.show();
-            }
-            if (resultCode == Activity.RESULT_CANCELED) {
-                //Write your code if there's no result
-            }
-        }
-    }*/
 }

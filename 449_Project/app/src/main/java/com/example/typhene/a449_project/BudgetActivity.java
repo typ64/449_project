@@ -17,7 +17,6 @@ public class BudgetActivity extends AppCompatActivity{
         setContentView(R.layout.budget_activity_layout);
 
         // Receive extra data or parameter
-        Intent intent2 = getIntent();
         String message = "Enter your budget";
 
         Context context = getApplicationContext();
